@@ -11,15 +11,18 @@ permissions:
   contents: read
   pages: write
   id-token: write
+
+# Set environment variable at workflow level (applies to all jobs)
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-  
+
 jobs:
   test:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
+    # No need to set env again here - it inherits from workflow level
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -51,7 +54,7 @@ jobs:
             **/video/**/*
       - name: Upload Pages artifact for main branch
         if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.os == 'ubuntu-latest'
-        uses: actions/upload-pages-artifact@v4  # FIXED: v2 → v4
+        uses: actions/upload-pages-artifact@v4
         with:
           path: playwright-report
           name: github-pages
@@ -60,9 +63,10 @@ jobs:
     needs: test
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    # Inherits the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24 from workflow level
     steps:
       - uses: actions/checkout@v4
       - name: Deploy Playwright HTML report to GitHub Pages
-        uses: actions/deploy-pages@v4  # FIXED: Make sure this is v4
+        uses: actions/deploy-pages@v4
         with:
           artifact_name: github-pages
