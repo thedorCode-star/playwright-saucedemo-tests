@@ -1,52 +1,54 @@
+
 # QA Playwright Demo
 
-Thank you for reviewing my portfolio demo. This repository contains a small Playwright-based end-to-end test suite I built to demonstrate my QA automation skills.
+[![Playwright Tests](https://github.com/OWNER/REPO/actions/workflows/playwright.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/playwright.yml)
 
-**What this project shows**
-- Uses `@playwright/test` to write reliable end-to-end tests.
-- Example test files are in the `tests/` folder (`login.spec.js`, `cart.spec.js`, etc.).
-- Focus on clear, maintainable test structure, selectors and assertions.
+Short demo repository showcasing end-to-end automation using Playwright. Designed for recruiters and reviewers to quickly assess my QA skills.
 
-**Tech stack**
-- Node.js
-- Playwright (`@playwright/test`)
+**Highlights**
+- Clear, maintainable test examples using `@playwright/test`.
+- Tests located in the `tests/` folder (`login.spec.js`, `cart.spec.js`).
+- Focus on actionable E2E scenarios, readable assertions, and simple setup.
 
-**How to run the tests (local)**
+**Quick start**
 1. Install dependencies:
 
 ```bash
 npm install
 ```
 
-2. Install Playwright browser binaries (recommended):
+2. Install Playwright browsers (recommended):
 
 ```bash
 npx playwright install
 ```
 
-If you encounter errors installing WebKit on some macOS versions, install only the browsers you need (e.g. skip WebKit):
+If your macOS blocks WebKit, install the browsers you need only:
 
 ```bash
 npx playwright install chromium firefox
 ```
 
-3. Run tests (headed):
+3. Run the test suite:
 
 ```bash
 npx playwright test --headed
 ```
 
-Or run headless (default):
+Or run headless:
 
 ```bash
 npx playwright test
 ```
 
-**Notes for recruiters / reviewers**
-- This is a demonstration repository for hiring evaluation and learning. Tests are intentionally compact and focused on showing E2E flows.
-- If you want me to expand this (more scenarios, CI config, reports, or refactor to TS), tell me which areas you'd like to see.
+**Continuous Integration**
+This repo includes a GitHub Actions workflow at `.github/workflows/playwright.yml` that runs the Playwright test suite on push and pull requests. The badge above will show build status once you replace `OWNER/REPO` with your repository path.
+
+**For recruiters**
+- What to look for: test clarity, selector strategy, and meaningful assertions.
+- I can expand this demo (more scenarios, test reporting, CI matrices, TypeScript conversion) on request.
 
 **Contact**
-- Email: tshims79@gmail.com
+- Replace with your preferred contact (email or LinkedIn): your-email@example.com
 
-Thank you for taking a look!
+Thank you for reviewing my work.
