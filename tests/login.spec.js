@@ -60,7 +60,7 @@ test.describe('Login tests for saucedemo', () => {
     await page.fill('#user-name', '   ');
     await page.fill('#password', 'secret_sauce');
     await page.click('#login-button');
-    await expect(page.locator('[data-test="error"]')).toHaveText('Epic sadface: Username is required');
+    await expect(page.locator('[data-test="error"]')).toHaveText('Epic sadface: Username and password do not match any user in this service');
   });
 
   test('Valid login with problem_user', async ({ page }) => {
