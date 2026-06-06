@@ -123,6 +123,42 @@ test.describe('Cart tests for saucedemo', () => {
     await expect(page.locator('.pony_express')).toBeVisible();
   });
 
+  test('Checkout validation shows error when first name is missing', async ({ page }) => {
+    await page.click('[data-test="add-to-cart-sauce-labs-backpack"]');
+    await page.click('.shopping_cart_link');
+    await page.click('[data-test="checkout"]');
+
+    await page.fill('[data-test="lastName"]', 'Doe');
+    await page.fill('[data-test="postalCode"]', '12345');
+    await page.click('[data-test="continue"]');
+
+    await expect(page.locator('[data-test="error"]')).toHaveText('Error: First Name is required');
+  });
+
+  test('Checkout validation shows error when last name is missing', async ({ page }) => {
+    await page.click('[data-test="add-to-cart-sauce-labs-backpack"]');
+    await page.click('.shopping_cart_link');
+    await page.click('[data-test="checkout"]');
+
+    await page.fill('[data-test="firstName"]', 'John');
+    await page.fill('[data-test="postalCode"]', '12345');
+    await page.click('[data-test="continue"]');
+
+    await expect(page.locator('[data-test="error"]')).toHaveText('Error: Last Name is required');
+  });
+
+  test('Checkout validation shows error when postal code is missing', async ({ page }) => {
+    await page.click('[data-test="add-to-cart-sauce-labs-backpack"]');
+    await page.click('.shopping_cart_link');
+    await page.click('[data-test="checkout"]');
+
+    await page.fill('[data-test="firstName"]', 'John');
+    await page.fill('[data-test="lastName"]', 'Doe');
+    await page.click('[data-test="continue"]');
+
+    await expect(page.locator('[data-test="error"]')).toHaveText('Error: Postal Code is required');
+  });
+
   test('Cancel checkout returns to cart', async ({ page }) => {
     await page.click('[data-test="add-to-cart-sauce-labs-backpack"]');
     await page.click('.shopping_cart_link');
