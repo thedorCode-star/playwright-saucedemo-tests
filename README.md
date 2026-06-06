@@ -47,6 +47,10 @@ Run with trace collection on retry:
 npm run test:trace
 ```
 
+- `npm test` runs the full Playwright suite in the default headless mode.
+- `npm run test:html` generates an HTML report in `playwright-report/`.
+- `npm run test:trace` collects retry traces for failed runs, which helps debug flaky tests.
+
 **Continuous Integration**
 This repo includes a GitHub Actions workflow at `.github/workflows/playwright.yml` that runs the Playwright test suite on push and pull requests. The badge above will show build status once you replace `OWNER/REPO` with your repository path.
 
