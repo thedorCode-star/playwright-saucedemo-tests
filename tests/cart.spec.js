@@ -48,30 +48,30 @@ test.describe('Cart tests for saucedemo', () => {
 
   test('Add all items to cart', async ({ page }) => {
     // Add all available items to the cart
-    await page.click('[data-test="add-to-cart-sauce-labs-backpack"]');
-    await page.click('[data-test="add-to-cart-sauce-labs-bike-light"]');
-    await page.click('[data-test="add-to-cart-sauce-labs-bolt-t-shirt"]');
-    await page.click('[data-test="add-to-cart-sauce-labs-fleece-jacket"]');
-    await page.click('[data-test="add-to-cart-sauce-labs-onesie"]');
-    
-    // Get all add-to-cart buttons and count them
-    const addToCartButtons = page.locator('[data-test^="add-to-cart-"]');
-    const buttonCount = await addToCartButtons.count();
-    
-    // Add the remaining item if there are more than 5
-    if (buttonCount > 5) {
-      await page.click('[data-test^="add-to-cart-"]').last();
+    const addToCartButtons = await page.locator('[data-test^="add-to-cart-"]').elementHandles();
+    await expect(addToCartButtons.length).toBeGreaterThan(0);
+
+    for (const button of addToCartButtons) {
+      await button.click();
     }
 
     // Verify cart counter shows correct count
-    await expect(page.locator('.shopping_cart_badge')).toHaveText('5');
+    await expect(page.locator('.shopping_cart_badge')).toHaveText('6');
 
     // Navigate to cart
     await page.click('.shopping_cart_link');
 
-    // Verify 5 items are in the cart
+    // Verify 6 items are in the cart
     const cartItems = page.locator('.cart_item');
-    await expect(cartItems).toHaveCount(5);
+    await expect(cartItems).toHaveCount(6);
+  });
+
+  test('Sort products by price low to high on inventory page', async ({ page }) => {
+    await page.selectOption('.product_sort_container', 'lohi');
+    const prices = await page.locator('.inventory_item_price').allTextContents();
+    const numericPrices = prices.map((price) => parseFloat(price.replace('$', '')));
+    const sortedPrices = [...numericPrices].sort((a, b) => a - b);
+    await expect(numericPrices).toEqual(sortedPrices);
   });
 
   test('Continue shopping button navigates back to inventory', async ({ page }) => {
@@ -102,6 +102,39 @@ test.describe('Cart tests for saucedemo', () => {
 
     // Verify we're on the checkout page
     await expect(page).toHaveURL('https://www.saucedemo.com/checkout-step-one.html');
+  });
+
+  test('Complete checkout and verify thank-you page', async ({ page }) => {
+    await page.click('[data-test="add-to-cart-sauce-labs-backpack"]');
+    await page.click('[data-test="add-to-cart-sauce-labs-bike-light"]');
+    await page.click('.shopping_cart_link');
+    await page.click('[data-test="checkout"]');
+
+    await page.fill('[data-test="firstName"]', 'John');
+    await page.fill('[data-test="lastName"]', 'Doe');
+    await page.fill('[data-test="postalCode"]', '12345');
+    await page.click('[data-test="continue"]');
+
+    await expect(page.locator('.title')).toHaveText('Checkout: Overview');
+    await expect(page.locator('.summary_total_label')).toContainText('Total');
+
+    await page.click('[data-test="finish"]');
+    await expect(page.locator('.complete-header')).toHaveText('Thanks you for your order!');
+    await expect(page.locator('.pony_express')).toBeVisible();
+  });
+
+  test('Cancel checkout returns to cart', async ({ page }) => {
+    await page.click('[data-test="add-to-cart-sauce-labs-backpack"]');
+    await page.click('.shopping_cart_link');
+    await page.click('[data-test="checkout"]');
+
+    await page.fill('[data-test="firstName"]', 'Jane');
+    await page.fill('[data-test="lastName"]', 'Doe');
+    await page.fill('[data-test="postalCode"]', '12345');
+    await page.click('[data-test="cancel"]');
+
+    await expect(page).toHaveURL('https://www.saucedemo.com/cart.html');
+    await expect(page.locator('.title')).toHaveText('Your Cart');
   });
 
   test('Verify cart persists after adding more items', async ({ page }) => {
