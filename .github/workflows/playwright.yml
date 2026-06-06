@@ -7,8 +7,15 @@ on:
   schedule:
     - cron: '0 6 * * *'  # runs daily at 6 AM UTC
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   test:
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -24,21 +31,21 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run tests and generate HTML report (with traces on retry)
         # generate HTML report and enable traces for first retry to collect diagnostics
-        run: npx playwright test --reporter=html --trace=on-first-retry || true
+        run: npx playwright test --reporter=html --trace=on-first-retry
       - name: Upload Playwright HTML report
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-${{ matrix.os }}
           path: playwright-report/
       - name: Upload test-results (traces/screenshots)
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: test-results-${{ matrix.os }}
           path: test-results/**
       - name: Upload traces and screenshots
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: traces-screenshots-${{ matrix.os }}
@@ -47,3 +54,20 @@ jobs:
             **/trace/**/*
             **/screenshots/**/*
             **/video/**/*
+      - name: Upload Pages artifact for main branch
+        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.os == 'ubuntu-latest'
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: playwright-report
+
+  deploy-report:
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-pages-artifact@v1
+        with:
+          path: playwright-report
+      - name: Deploy Playwright HTML report to GitHub Pages
+        uses: actions/deploy-pages@v1
