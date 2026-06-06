@@ -1,7 +1,7 @@
 
 # QA Playwright Demo
 
-[![Playwright Tests](https://github.com/OWNER/REPO/actions/workflows/playwright.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/playwright.yml)
+[![Playwright Tests](https://github.com/thedorCode-star/playwright-saucedemo-tests/actions/workflows/playwright.yml/badge.svg)](https://github.com/thedorCode-star/playwright-saucedemo-tests/actions/workflows/playwright.yml)
 
 Short demo repository showcasing end-to-end automation using Playwright. Designed for recruiters and reviewers to quickly assess my QA skills.
 

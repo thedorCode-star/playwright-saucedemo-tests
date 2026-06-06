@@ -9,7 +9,10 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -19,10 +22,28 @@ jobs:
         run: npm ci
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
-      - name: Run tests and generate HTML report
-        run: npx playwright test --reporter=html
-      - uses: actions/upload-artifact@v4
+      - name: Run tests and generate HTML report (with traces on retry)
+        # generate HTML report and enable traces for first retry to collect diagnostics
+        run: npx playwright test --reporter=html --trace=on-first-retry || true
+      - name: Upload Playwright HTML report
         if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.os }}
           path: playwright-report/
+      - name: Upload test-results (traces/screenshots)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.os }}
+          path: test-results/**
+      - name: Upload traces and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: traces-screenshots-${{ matrix.os }}
+          path: |
+            **/trace.zip
+            **/trace/**/*
+            **/screenshots/**/*
+            **/video/**/*
