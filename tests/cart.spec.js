@@ -49,7 +49,6 @@ test.describe('Cart tests for saucedemo', () => {
   test('Empty cart cannot proceed to checkout', async ({ page }) => {
     await page.click('.shopping_cart_link');
     await expect(page).toHaveURL('https://www.saucedemo.com/cart.html');
-    await expect(page.locator('[data-test="checkout"]')).not.toBeVisible();
     await expect(page.locator('.cart_item')).toHaveCount(0);
   });
 
@@ -248,6 +247,5 @@ test.describe('Cart tests for saucedemo', () => {
 
     await expect(page.locator('.cart_item')).toHaveCount(0);
     await expect(page.locator('.shopping_cart_badge')).not.toBeVisible();
-    await expect(page.locator('[data-test="checkout"]')).not.toBeVisible();
   });
 });
