@@ -51,7 +51,7 @@ jobs:
             **/video/**/*
       - name: Upload Pages artifact for main branch
         if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.os == 'ubuntu-latest'
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v2
         with:
           path: playwright-report
           name: github-pages
