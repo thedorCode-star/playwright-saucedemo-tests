@@ -46,6 +46,13 @@ test.describe('Cart tests for saucedemo', () => {
     await expect(page.locator('.shopping_cart_badge')).not.toBeVisible();
   });
 
+  test('Empty cart cannot proceed to checkout', async ({ page }) => {
+    await page.click('.shopping_cart_link');
+    await expect(page).toHaveURL('https://www.saucedemo.com/cart.html');
+    await expect(page.locator('[data-test="checkout"]')).not.toBeVisible();
+    await expect(page.locator('.cart_item')).toHaveCount(0);
+  });
+
   test('Add all items to cart', async ({ page }) => {
     // Add all available items to the cart
     const addToCartButtons = await page.locator('[data-test^="add-to-cart-"]').elementHandles();
@@ -119,7 +126,7 @@ test.describe('Cart tests for saucedemo', () => {
     await expect(page.locator('.summary_total_label')).toContainText('Total');
 
     await page.click('[data-test="finish"]');
-    await expect(page.locator('.complete-header')).toHaveText('Thanks you for your order!');
+    await expect(page.locator('.complete-header')).toHaveText('Thank you for your order!');
     await expect(page.locator('.pony_express')).toBeVisible();
   });
 
@@ -229,5 +236,18 @@ test.describe('Cart tests for saucedemo', () => {
     // Verify only 2 items remain
     const cartItems = page.locator('.cart_item');
     await expect(cartItems).toHaveCount(2);
+  });
+
+  test('Remove all items and verify cart is empty', async ({ page }) => {
+    await page.click('[data-test="add-to-cart-sauce-labs-backpack"]');
+    await page.click('[data-test="add-to-cart-sauce-labs-bike-light"]');
+
+    await page.click('.shopping_cart_link');
+    await page.click('[data-test="remove-sauce-labs-backpack"]');
+    await page.click('[data-test="remove-sauce-labs-bike-light"]');
+
+    await expect(page.locator('.cart_item')).toHaveCount(0);
+    await expect(page.locator('.shopping_cart_badge')).not.toBeVisible();
+    await expect(page.locator('[data-test="checkout"]')).not.toBeVisible();
   });
 });
