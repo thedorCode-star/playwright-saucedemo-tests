@@ -32,13 +32,19 @@ npx playwright install chromium firefox
 3. Run the test suite:
 
 ```bash
-npx playwright test --headed
+npm test
 ```
 
-Or run headless:
+Or run the HTML report directly:
 
 ```bash
-npx playwright test
+npm run test:html
+```
+
+Run with trace collection on retry:
+
+```bash
+npm run test:trace
 ```
 
 **Continuous Integration**
