@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [ main ]
   schedule:
-    - cron: '0 6 * * *'  # runs daily at 6 AM UTC
+    - cron: '0 6 * * *'
 
 permissions:
   contents: read
@@ -29,27 +29,22 @@ jobs:
         run: npm ci
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
-      - name: Run tests and generate HTML report (with traces on retry)
-        # generate HTML report and enable traces for first retry to collect diagnostics
+      - name: Run Playwright tests and generate HTML report
         run: npx playwright test --reporter=html --trace=on-first-retry
-      - name: Upload Playwright HTML report
+      - name: Upload Playwright HTML report on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-${{ matrix.os }}
-          path: playwright-report/
-      - name: Upload test-results (traces/screenshots)
+          path: playwright-report
+      - name: Upload Playwright traces and screenshots on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-${{ matrix.os }}
-          path: test-results/**
-      - name: Upload traces and screenshots
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: traces-screenshots-${{ matrix.os }}
+          name: playwright-traces-${{ matrix.os }}
           path: |
+            playwright-report
+            test-results/**
             **/trace.zip
             **/trace/**/*
             **/screenshots/**/*
@@ -59,6 +54,7 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           path: playwright-report
+          name: github-pages
 
   deploy-report:
     needs: test
@@ -66,8 +62,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-pages-artifact@v1
-        with:
-          path: playwright-report
       - name: Deploy Playwright HTML report to GitHub Pages
         uses: actions/deploy-pages@v1
+        with:
+          artifact_name: github-pages

@@ -49,6 +49,6 @@ This repo includes a GitHub Actions workflow at `.github/workflows/playwright.ym
 - I can expand this demo (more scenarios, test reporting, CI matrices, TypeScript conversion) on request.
 
 **Contact**
-- Replace with your preferred contact (email or LinkedIn): your-email@example.com
+- tshims79@gmail.com
 
 Thank you for reviewing my work.
