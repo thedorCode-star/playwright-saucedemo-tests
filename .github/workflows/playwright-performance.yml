@@ -1,0 +1,51 @@
+name: Playwright Performance Tests
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      os:
+        description: 'Platform to run performance tests'
+        required: false
+        default: ubuntu-latest
+        type: choice
+        options:
+          - ubuntu-latest
+          - macos-latest
+
+permissions:
+  contents: read
+
+jobs:
+  performance:
+    runs-on: ${{ github.event.inputs.os || 'ubuntu-latest' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+      - name: Run only performance tests
+        run: npx playwright test tests/performance.spec.js --reporter=html --trace=on-first-retry
+      - name: Upload Playwright HTML report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-performance-report-${{ github.event.inputs.os || 'ubuntu-latest' }}
+          path: playwright-report
+      - name: Upload traces and screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-performance-traces-${{ github.event.inputs.os || 'ubuntu-latest' }}
+          path: |
+            playwright-report
+            test-results/**
+            **/trace.zip
+            **/trace/**/*
+            **/screenshots/**/*
+            **/video/**/*

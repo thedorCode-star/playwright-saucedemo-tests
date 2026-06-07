@@ -6,6 +6,7 @@ on:
     branches: [ main ]
   schedule:
     - cron: '0 6 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -33,7 +34,7 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests and generate HTML report
-        run: npx playwright test --reporter=html --trace=on-first-retry
+        run: npx playwright test --update-snapshots --reporter=html --trace=on-first-retry
       - name: Upload Playwright HTML report on failure
         if: failure()
         uses: actions/upload-artifact@v4
