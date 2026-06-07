@@ -82,7 +82,7 @@ Your performance test is `tests/performance.spec.js`.
 - I can expand this demo (more scenarios, test reporting, CI matrices, TypeScript conversion) on request.
 
 **Contact**
-- Tresor Tshimanga Kazadi 
+- Tresor Tshimanga 
 - tshims79@gmail.com
 
 Thank you for reviewing my work.
