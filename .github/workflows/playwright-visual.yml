@@ -30,7 +30,7 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
       - name: Run only visual tests
-        run: npx playwright test tests/visual --reporter=html --trace=on-first-retry
+        run: npx playwright test tests/visual --update-snapshots --reporter=html --trace=on-first-retry
       - name: Upload Playwright HTML report on failure
         if: failure()
         uses: actions/upload-artifact@v4
