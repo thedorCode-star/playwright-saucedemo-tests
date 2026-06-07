@@ -72,6 +72,11 @@ test.describe('Login tests for saucedemo', () => {
     await expect(loginPage.passwordInput).toHaveAttribute('type', 'password');
   });
 
+  test('test the github rule', async ({ loginPage }) => {
+    await loginPage.goto();
+    await expect(loginPage.passwordInput).toHaveAttribute('type', 'password');
+  });
+
   test('Login button should be enabled by default', async ({ loginPage }) => {
     await loginPage.goto();
     await expect(loginPage.loginButton).toBeEnabled();
