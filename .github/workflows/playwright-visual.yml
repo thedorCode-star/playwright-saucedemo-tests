@@ -1,0 +1,51 @@
+name: Playwright Visual Tests
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      os:
+        description: 'Platform to run visual tests'
+        required: false
+        default: ubuntu-latest
+        type: choice
+        options:
+          - ubuntu-latest
+          - macos-latest
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  visual:
+    runs-on: ${{ github.event.inputs.os || 'ubuntu-latest' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+      - name: Run only visual tests
+        run: npx playwright test tests/visual --reporter=html --trace=on-first-retry
+      - name: Upload Playwright HTML report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-visual-report-${{ github.event.inputs.os || 'ubuntu-latest' }}
+          path: playwright-report
+      - name: Upload traces and screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-visual-traces-${{ github.event.inputs.os || 'ubuntu-latest' }}
+          path: |
+            playwright-report
+            test-results/**
+            **/trace.zip
+            **/trace/**/*
+            **/screenshots/**/*
+            **/video/**/*

@@ -4,9 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npx playwright test",
-    "test:html": "npx playwright test --reporter=html",
-    "test:trace": "npx playwright test --trace=on-first-retry"
+    "test": "npx playwright test --project=default",
+    "test:visual": "npx playwright test --project=visual",
+    "test:visual:update": "npx playwright test --project=visual --update-snapshots",
+    "test:visual:html": "npx playwright test --project=visual --reporter=html",
+    "test:perf": "npx playwright test --project=performance",
+    "test:perf:html": "npx playwright test --project=performance --reporter=html",
+    "test:html": "npx playwright test --project=default --reporter=html",
+    "test:trace": "npx playwright test --project=default --trace=on-first-retry"
   },
   "keywords": [],
   "author": "",

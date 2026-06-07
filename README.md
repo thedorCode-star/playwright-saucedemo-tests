@@ -2,6 +2,8 @@
 # QA Playwright Demo
 
 [![Playwright Tests](https://github.com/thedorCode-star/playwright-saucedemo-tests/actions/workflows/playwright.yml/badge.svg)](https://github.com/thedorCode-star/playwright-saucedemo-tests/actions/workflows/playwright.yml)
+[![Visual Tests](https://github.com/thedorCode-star/playwright-saucedemo-tests/actions/workflows/playwright-visual.yml/badge.svg)](https://github.com/thedorCode-star/playwright-saucedemo-tests/actions/workflows/playwright-visual.yml)
+[![Performance Tests](https://github.com/thedorCode-star/playwright-saucedemo-tests/actions/workflows/playwright-performance.yml/badge.svg)](https://github.com/thedorCode-star/playwright-saucedemo-tests/actions/workflows/playwright-performance.yml)
 
 Short demo repository showcasing end-to-end automation using Playwright. Designed for recruiters and reviewers to quickly assess my QA skills.
 
@@ -51,8 +53,29 @@ npm run test:trace
 - `npm run test:html` generates an HTML report in `playwright-report/`.
 - `npm run test:trace` collects retry traces for failed runs, which helps debug flaky tests.
 
+Run only visual tests locally:
+
+```bash
+npx playwright test tests/visual
+```
+
+Run only performance tests locally:
+
+```bash
+npx playwright test tests/performance.spec.js
+```
+
 **Continuous Integration**
-This repo includes a GitHub Actions workflow at `.github/workflows/playwright.yml` that runs the Playwright test suite on push and pull requests. The badge above will show build status once you replace `OWNER/REPO` with your repository path.
+This repo includes three GitHub Actions workflows:
+
+- `.github/workflows/playwright.yml` runs the full Playwright suite on push/PR to `main`, plus daily schedule and manual workflow dispatch.
+- `.github/workflows/playwright-visual.yml` runs only the visual suite on PRs, manual dispatch, and push to `main`.
+- `.github/workflows/playwright-performance.yml` runs only the performance spec on PRs, manual dispatch, and push to `main`.
+
+The workflows install dependencies, install Playwright browsers, run tests, and upload reports/traces on failure.
+
+Your visual test lives in `tests/visual/`, with snapshots stored under `tests/visual/visual.spec.js-snapshots/`.
+Your performance test is `tests/performance.spec.js`.
 
 **For recruiters**
 - What to look for: test clarity, selector strategy, and meaningful assertions.
